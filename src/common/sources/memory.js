@@ -1,14 +1,6 @@
-const User = require('../../resources/users/user.model');
-const Task = require('../../resources/tasks/task.model');
-const Board = require('../../resources/boards/board.model');
-
 let users = [];
 let tasks = [];
 let boards = [];
-
-users.push(new User(), new User(), new User());
-tasks.push(new Task(), new Task(), new Task());
-boards.push(new Board(), new Board(), new Board());
 
 const getAllUsers = () => users.slice(0);
 const getUser = id => users.find(user => user.id === id);
@@ -22,6 +14,9 @@ const updateUser = newUser => {
 };
 const removeUser = id => {
   users = users.filter(user => user.id !== id);
+  tasks = tasks.map(task =>
+    task.userId === id ? { ...task, userId: null } : task
+  );
 };
 
 const getAllTasks = () => tasks.slice(0);
@@ -50,6 +45,7 @@ const updateBoard = newBoard => {
 };
 const removeBoard = id => {
   boards = boards.filter(board => board.id !== id);
+  tasks = tasks.filter(task => task.boardId !== id);
 };
 
 module.exports = {

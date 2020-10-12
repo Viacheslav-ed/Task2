@@ -9,7 +9,11 @@ router.route('/').get(async (req, res) => {
 
 router.route('/:id').get(async (req, res) => {
   const board = await boardsService.get(req.params.id);
-  res.json(Board.toResponse(board));
+  if (board) {
+    res.json(Board.toResponse(board));
+  } else {
+    res.sendStatus(404);
+  }
 });
 
 router.route('/').post(async (req, res) => {
@@ -34,8 +38,13 @@ router.route('/:id').put(async (req, res) => {
 });
 
 router.route('/:id').delete(async (req, res) => {
-  await boardsService.remove(req.params.id);
-  res.json();
+  const board = await boardsService.get(req.params.id);
+  if (board) {
+    await boardsService.remove(req.params.id);
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(404);
+  }
 });
 
 module.exports = router;
