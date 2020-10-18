@@ -26,8 +26,10 @@ morgan.token(
 morgan.token('params', req => `query parameters: ${JSON.stringify(req.query)}`);
 morgan.token('body', req => `body: ${JSON.stringify(req.body)}`);
 
-const useLogger = morgan(':fullUrl :params :body', {
-  stream: { write: logger.info }
-});
+const stream = {
+  write: message => logger.info(message)
+};
+
+const useLogger = morgan(':fullUrl :params :body', { stream });
 
 module.exports = { useLogger, logger };
