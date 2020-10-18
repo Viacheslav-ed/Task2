@@ -3,6 +3,7 @@ const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
 const { useLogger, logger } = require('./common/logger');
+const { useErrorHandling } = require('./common/error-handling');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
@@ -14,8 +15,6 @@ const exit = process.exit;
 
 app.use(express.json());
 
-app.use(useLogger);
-
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use('/', (req, res, next) => {
@@ -26,17 +25,27 @@ app.use('/', (req, res, next) => {
   next();
 });
 
+app.use(useLogger);
+
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
 
+app.use(useErrorHandling);
+
 process.on('unhandledRejection', reason => {
-  logger.error(`UnhandledRejection error: ${reason.message}`);
+  console.log(reason.stack);
+  logger.error(
+    `[UnhandledRejection error] Message: ${reason.message}, Stack: ${reason.stack}`
+  );
   exit(1);
 });
 
 process.on('uncaughtException', error => {
-  logger.error(`UncaughtException error: ${error.message}`);
+  console.log(error.stack);
+  logger.error(
+    `[UncaughtException error] Message: ${error.message}, Stack: ${error.stack}`
+  );
   exit(1);
 });
 
