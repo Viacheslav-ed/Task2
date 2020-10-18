@@ -21,15 +21,15 @@ const logger = createLogger({
 
 morgan.token(
   'fullUrl',
-  req => `url: ${req.protocol}://${req.headers.host}${req.originalUrl}`
+  req => `Url: ${req.protocol}://${req.headers.host}${req.originalUrl}`
 );
-morgan.token('params', req => `query parameters: ${JSON.stringify(req.query)}`);
-morgan.token('body', req => `body: ${JSON.stringify(req.body)}`);
+morgan.token('params', req => `Query parameters: ${JSON.stringify(req.query)}`);
+morgan.token('body', req => `Body: ${JSON.stringify(req.body)}`);
 
 const stream = {
   write: message => logger.info(message)
 };
 
-const useLogger = morgan(':fullUrl :params :body', { stream });
+const useLogger = morgan(':fullUrl, :params, :body', { stream });
 
 module.exports = { useLogger, logger };
