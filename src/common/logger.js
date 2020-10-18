@@ -1,3 +1,4 @@
+const morgan = require('morgan');
 const { createLogger, format, transports } = require('winston');
 
 const logger = createLogger({
@@ -18,19 +19,15 @@ const logger = createLogger({
   ]
 });
 
-// logger.silly('silly');
-// logger.debug('debug');
-// logger.verbose('verbose');
-// logger.info('info');
-// logger.warn('warn');
-// logger.error('error');
-//
-// logger.log('info', 'info from log');
+morgan.token(
+  'fullUrl',
+  req => `url: ${req.protocol}://${req.headers.host}${req.originalUrl}`
+);
+morgan.token('params', req => `query parameters: ${JSON.stringify(req.query)}`);
+morgan.token('body', req => `body: ${JSON.stringify(req.body)}`);
 
-logger.stream = {
-  write(message) {
-    logger.info(message);
-  }
-};
+const useLogger = morgan(':fullUrl :params :body', {
+  stream: { write: logger.info }
+});
 
-module.exports = logger;
+module.exports = { useLogger, logger };
