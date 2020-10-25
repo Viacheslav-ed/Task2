@@ -19,27 +19,14 @@ router.route('/:id').get(
 
 router.route('/').post(
   asyncHandleError(async (req, res) => {
-    const user = await usersService.create(
-      new User({
-        name: req.body.name,
-        login: req.body.login,
-        password: req.body.password
-      })
-    );
+    const user = await usersService.create(req.body);
     res.json(User.toResponse(user));
   })
 );
 
 router.route('/:id').put(
   asyncHandleError(async (req, res) => {
-    const user = await usersService.update(
-      new User({
-        id: req.params.id,
-        name: req.body.name,
-        login: req.body.login,
-        password: req.body.password
-      })
-    );
+    const user = await usersService.update(req.params.id, req.body);
     res.json(User.toResponse(user));
   })
 );
