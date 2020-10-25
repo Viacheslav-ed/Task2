@@ -19,33 +19,20 @@ router.route('/:id').get(
 
 router.route('/').post(
   asyncHandleError(async (req, res) => {
-    const task = await tasksService.create(
-      new Task({
-        title: req.body.title,
-        order: req.body.order,
-        description: req.body.description,
-        userId: req.body.userId,
-        boardId: req.params.boardId,
-        columnId: req.body.columnId
-      })
-    );
+    const task = await tasksService.create({
+      ...req.body,
+      boardId: req.params.boardId
+    });
     res.json(Task.toResponse(task));
   })
 );
 
 router.route('/:id').put(
   asyncHandleError(async (req, res) => {
-    const task = await tasksService.update(
-      new Task({
-        id: req.params.id,
-        title: req.body.title,
-        order: req.body.order,
-        description: req.body.description,
-        userId: req.body.userId,
-        boardId: req.params.boardId,
-        columnId: req.body.columnId
-      })
-    );
+    const task = await tasksService.update(req.params.id, {
+      ...req.body,
+      boardId: req.params.boardId
+    });
     res.json(Task.toResponse(task));
   })
 );

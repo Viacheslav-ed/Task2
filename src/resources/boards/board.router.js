@@ -19,25 +19,14 @@ router.route('/:id').get(
 
 router.route('/').post(
   asyncHandleError(async (req, res) => {
-    const board = await boardsService.create(
-      new Board({
-        title: req.body.title,
-        columns: req.body.columns
-      })
-    );
+    const board = await boardsService.create(req.body);
     res.json(Board.toResponse(board));
   })
 );
 
 router.route('/:id').put(
   asyncHandleError(async (req, res) => {
-    const board = await boardsService.update(
-      new Board({
-        id: req.params.id,
-        title: req.body.title,
-        columns: req.body.columns
-      })
-    );
+    const board = await boardsService.update(req.params.id, req.body);
     res.json(Board.toResponse(board));
   })
 );
