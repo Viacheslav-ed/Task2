@@ -1,4 +1,5 @@
 const Board = require('./board.model');
+const Task = require('../tasks/task.model');
 
 const getAll = async () => Board.find({});
 const get = async id => {
@@ -19,6 +20,10 @@ const update = async (id, board) => {
 const remove = async id => {
   await get(id);
   await Board.deleteOne({ _id: id });
+  const boardTasks = await Task.find({ boardId: id });
+  for (const task of boardTasks) {
+    await Task.deleteOne({ _id: task.id });
+  }
 };
 
 module.exports = { getAll, get, create, update, remove };
