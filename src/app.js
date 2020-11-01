@@ -7,6 +7,8 @@ const { useErrorHandling } = require('./common/error-handling');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
+const loginRouter = require('./resources/login/login.router');
+const checkAuthorization = require('./common/check-authorization');
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
@@ -26,6 +28,10 @@ app.use('/', (req, res, next) => {
 });
 
 app.use(useLogger);
+
+app.use('/login', loginRouter);
+
+app.use(checkAuthorization);
 
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
