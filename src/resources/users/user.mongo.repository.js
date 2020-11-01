@@ -1,5 +1,11 @@
 const User = require('./user.model');
 const Task = require('../tasks/task.model');
+const bcrypt = require('bcrypt');
+
+const hashedUser = async user => {
+  const hashPass = await bcrypt.hash(user.password, 12);
+  return { ...user, password: hashPass };
+};
 
 const getAll = async () => User.find({});
 const get = async id => {
@@ -12,10 +18,10 @@ const get = async id => {
   return user;
 };
 const getByLogin = async login => User.findOne({ login });
-const create = async user => User.create(user);
+const create = async user => User.create(await hashedUser(user));
 const update = async (id, user) => {
   await get(id);
-  await User.updateOne({ _id: id }, user);
+  await User.updateOne({ _id: id }, await hashedUser(user));
   return get(id);
 };
 const remove = async id => {
