@@ -15,7 +15,7 @@ router.route('/').post(
       res.status('403').send('Wrong login or password');
     } else {
       logger.info(`Create token: ${token}`);
-      res.json(token);
+      res.json({ token });
     }
   })
 );
